@@ -1,0 +1,84 @@
+{
+  "instrucciones": "FORMATO PARA 'CÓMO LLEGAR': https://www.google.com/maps/dir/?api=1&destination=NOMBRE+EMPRESA+ALMERIA. Ejemplo: https://www.google.com/maps/dir/?api=1&destination=Biorizon+Biotech+Almeria. Reemplaza espacios por + en el nombre.",
+  
+  "empresas": [
+    {
+      "id": "biorizon-biotech",
+      "nombre": "Biorizon Biotech",
+      "direccion": "Avda. de la Innovación, 15, 04131 Almería",
+      "mapsUrl": "https://maps.app.goo.gl/pNBWP89rDAbpsGb59"
+    },
+    {
+      "id": "cajamar",
+      "nombre": "Cajamar",
+      "direccion": "Avda. de la Innovación, 1, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/Cajamar/@36.8377,-2.4012,17z"
+    },
+    {
+      "id": "caparros-nature",
+      "nombre": "Caparrós Nature",
+      "direccion": "Avda. de la Innovación, 5, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/Caparr%C3%B3s+Nature/@36.8372,-2.4008,17z"
+    },
+    {
+      "id": "dicsa",
+      "nombre": "Dicsa",
+      "direccion": "Avda. de la Innovación, 10, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/Dicsa/@36.8379,-2.4015,17z"
+    },
+    {
+      "id": "edificio-grupo-cajamar",
+      "nombre": "Edificio Grupo Cajamar",
+      "direccion": "Avda. de la Innovación, 1, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/Grupo+Cajamar/@36.8377,-2.4012,17z"
+    },
+    {
+      "id": "hintes",
+      "nombre": "Hintes",
+      "direccion": "Avda. de la Innovación, 12, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/Hintes/@36.8380,-2.4018,17z"
+    },
+    {
+      "id": "iberveg",
+      "nombre": "Iberveg",
+      "direccion": "Avda. de la Innovación, 8, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/Iberveg/@36.8376,-2.4010,17z"
+    },
+    {
+      "id": "idm",
+      "nombre": "IDM",
+      "direccion": "Avda. de la Innovación, 11, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/IDM/@36.8378,-2.4014,17z"
+    },
+    {
+      "id": "l-d",
+      "nombre": "L&D",
+      "direccion": "Avda. de la Innovación, 14, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/L%26D/@36.8382,-2.4020,17z"
+    },
+    {
+      "id": "lab",
+      "nombre": "Lab",
+      "direccion": "Avda. de la Innovación, 16, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/Lab+PITA/@36.8383,-2.4022,17z"
+    },
+    {
+      "id": "mecanica-4h",
+      "nombre": "Mecánica 4h",
+      "direccion": "Avda. de la Innovación, 4, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/Mec%C3%A1nica+4h/@36.8374,-2.4006,17z"
+    },
+    {
+      "id": "tecnova",
+      "nombre": "Tecnova",
+      "direccion": "Avda. de la Innovación, 23, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/Fundaci%C3%B3n+Tecnova/@36.8385,-2.4025,17z"
+    },
+    {
+      "id": "unica-group",
+      "nombre": "Única Group",
+      "direccion": "Avda. de la Innovación, 2, 04131 Almería",
+      "mapsUrl": "https://www.google.com/maps/place/%C3%9Anica+Group/@36.8370,-2.4005,17z"
+    }
+  ]
+}

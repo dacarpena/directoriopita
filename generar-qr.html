@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar QR - PITA</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .card {
+            max-width: 420px;
+            width: 100%;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 32px;
+        }
+        .header { text-align: center; margin-bottom: 28px; }
+        .logo {
+            background: #fff;
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 16px;
+        }
+        .logo img { height: 28px; }
+        h1 { font-size: 1.25rem; font-weight: 600; color: #111; }
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #111;
+            background: #f8f9fa;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            outline: none;
+            margin-bottom: 20px;
+        }
+        input:focus { border-color: #16a34a; }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #fff;
+            background: #16a34a;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .btn:hover { background: #15803d; }
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #111;
+            border: 1px solid #e5e7eb;
+            margin-top: 12px;
+        }
+        .btn-secondary:hover { background: #f1f5f9; }
+        .qr-box {
+            margin-top: 28px;
+            padding: 24px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            text-align: center;
+            display: none;
+        }
+        .qr-box.show { display: block; }
+        #qrcode { display: flex; justify-content: center; }
+        .qr-url {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: #6b7280;
+            word-break: break-all;
+        }
+        .files {
+            margin-top: 24px;
+            padding: 16px;
+            background: #f0fdf4;
+            border-radius: 10px;
+        }
+        .files h3 {
+            font-size: 0.85rem;
+            color: #16a34a;
+            margin-bottom: 12px;
+        }
+        .files ul {
+            list-style: none;
+            font-size: 0.85rem;
+            color: #374151;
+        }
+        .files li {
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(22,163,74,0.1);
+        }
+        .files li:last-child { border: none; }
+        .files code {
+            background: rgba(22,163,74,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <div class="logo"><img src="logoPITA.png" alt="PITA"></div>
+            <h1>Generar código QR</h1>
+        </div>
+
+        <label>URL del directorio</label>
+        <input type="text" id="url" value="https://tu-dominio.com/pita/" placeholder="https://...">
+        <button class="btn" onclick="generate()">Generar QR</button>
+
+        <div class="qr-box" id="qrBox">
+            <div id="qrcode"></div>
+            <p class="qr-url" id="qrUrl"></p>
+            <button class="btn btn-secondary" onclick="download()">Descargar PNG</button>
+        </div>
+
+        <div class="files">
+            <h3>Archivos necesarios</h3>
+            <ul>
+                <li><code>index.html</code> - Página principal</li>
+                <li><code>logoPITA.png</code> - Logo del parque</li>
+                <li><code>manifest.json</code> - Config PWA</li>
+                <li><code>sw.js</code> - Service Worker</li>
+                <li><code>icon-192.png</code> - Icono app</li>
+                <li><code>icon-512.png</code> - Icono app HD</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function generate() {
+            var url = document.getElementById('url').value.trim();
+            if (!url) return;
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById('qrcode'), {
+                text: url,
+                width: 200,
+                height: 200,
+                colorDark: "#111",
+                colorLight: "#fff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            document.getElementById('qrUrl').textContent = url;
+            document.getElementById('qrBox').classList.add('show');
+        }
+        function download() {
+            var canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) return;
+            var a = document.createElement('a');
+            a.download = 'qr-pita.png';
+            a.href = canvas.toDataURL();
+            a.click();
+        }
+        generate();
+    </script>
+</body>
+</html>

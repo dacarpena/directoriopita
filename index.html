@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#16a34a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="PITA">
+    <title>Directorio PITA</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="logoPITA.png">
+    <link rel="apple-touch-icon" href="logoPITA.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-card: #f8f9fa;
+            --bg-input: #ffffff;
+            --border: #e5e7eb;
+            --border-hover: #d1d5db;
+            --text: #111827;
+            --text-secondary: #6b7280;
+            --primary: #16a34a;
+            --primary-bg: rgba(22, 163, 74, 0.08);
+            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+            --radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0a0a0a;
+            --bg-card: #161616;
+            --bg-input: #1a1a1a;
+            --border: rgba(255,255,255,0.1);
+            --border-hover: rgba(255,255,255,0.2);
+            --text: #f9fafb;
+            --text-secondary: rgba(255,255,255,0.5);
+            --primary: #22c55e;
+            --primary-bg: rgba(34,197,94,0.12);
+            --shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: 100dvh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.3s, color 0.3s;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('Background/bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        [data-theme="dark"] body::before {
+            opacity: 0.06;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 0 16px;
+            padding-top: env(safe-area-inset-top, 0);
+            padding-bottom: calc(24px + env(safe-area-inset-bottom, 0));
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-box {
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .logo-box img {
+            height: 26px;
+            display: block;
+        }
+
+        .header-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--border-hover);
+        }
+
+        .icon-btn svg {
+            width: 18px;
+            height: 18px;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .icon-btn:hover svg {
+            color: var(--text);
+        }
+
+        .icon-sun, .icon-moon { display: none; }
+        [data-theme="light"] .icon-moon { display: block; }
+        [data-theme="dark"] .icon-sun { display: block; }
+
+        /* Location banner */
+        .location-banner {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: var(--primary-bg);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .location-banner.show {
+            display: flex;
+        }
+
+        .location-banner svg {
+            width: 18px;
+            height: 18px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .location-banner span {
+            font-size: 0.85rem;
+            color: var(--text);
+            flex: 1;
+        }
+
+        .location-banner button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Category filters */
+        .filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            animation: fadeIn 0.4s ease-out 0.1s both;
+        }
+
+        .filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-btn {
+            padding: 8px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--border-hover);
+            color: var(--text);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .search-wrap {
+            position: relative;
+            margin-bottom: 16px;
+            animation: fadeIn 0.4s ease-out 0.15s both;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text);
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-bg);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .company-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .company-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideUp 0.35s ease-out forwards;
+        }
+
+        .company-card:hover {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .company-card:active {
+            transform: scale(0.98);
+        }
+
+        .company-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .company-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .company-icon svg,
+        .logo-fallback {
+            width: 18px;
+            height: 18px;
+            color: var(--text-secondary);
+        }
+
+        .logo-fallback {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .company-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .company-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .company-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
+        .company-category {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .company-distance {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            width: 18px;
+            height: 18px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .company-card:hover .nav-icon {
+            color: var(--primary);
+            transform: translateX(2px);
+        }
+
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text-secondary);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0 8px;
+            animation: fadeIn 0.4s ease-out 0.5s both;
+        }
+
+        .footer-link {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        /* Install prompt */
+        .install-prompt {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 16px;
+            right: 16px;
+            max-width: 388px;
+            margin: 0 auto;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 100;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .install-prompt.show {
+            display: block;
+        }
+
+        .install-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .install-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--primary-bg);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .install-icon svg {
+            width: 22px;
+            height: 22px;
+            color: var(--primary);
+        }
+
+        .install-text {
+            flex: 1;
+        }
+
+        .install-text strong {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .install-text span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .install-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .install-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .install-btn:hover {
+            opacity: 0.9;
+        }
+
+        .install-btn.primary {
+            background: var(--primary);
+            border: none;
+            color: white;
+        }
+
+        .install-btn.secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 480px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-wrap">
+                <div class="logo-box">
+                    <img src="logoPITA.png" alt="PITA">
+                </div>
+                <span class="header-title">Directorio</span>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" id="locationBtn" aria-label="Activar ubicación" title="Ordenar por distancia">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="themeToggle" aria-label="Cambiar tema">
+                    <svg class="icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <svg class="icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <div class="location-banner" id="locationBanner">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span>Ordenado por distancia</span>
+            </div>
+
+            <div class="filters" id="filters">
+                <button class="filter-btn active" data-category="all">Todas</button>
+                <button class="filter-btn" data-category="agro">Agricultura</button>
+                <button class="filter-btn" data-category="tech">Tecnología</button>
+                <button class="filter-btn" data-category="services">Servicios</button>
+            </div>
+
+            <div class="search-wrap">
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar empresa..." autocomplete="off">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+
+            <div class="company-list" id="companyList"></div>
+            <div class="no-results" id="noResults">No se encontraron empresas</div>
+        </main>
+
+        <footer>
+            <a href="https://pitalmeria.es" target="_blank" class="footer-link">pitalmeria.es</a>
+        </footer>
+    </div>
+
+    <!-- Install prompt -->
+    <div class="install-prompt" id="installPrompt">
+        <div class="install-content">
+            <div class="install-icon">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+            </div>
+            <div class="install-text">
+                <strong>Instalar Directorio PITA</strong>
+                <span>Accede más rápido desde tu pantalla de inicio</span>
+            </div>
+        </div>
+        <div class="install-actions">
+            <button class="install-btn secondary" id="installLater">Ahora no</button>
+            <button class="install-btn primary" id="installNow">Instalar</button>
+        </div>
+    </div>
+
+    <script>
+        // Empresas del PITA con coordenadas y categorías
+        // logo: nombre del archivo en carpeta logos/ (ej: "cajamar.png")
+        // maps: URL exacta de Google Maps (editar en direcciones.json)
+        // EDITA AQUÍ LAS URLS DE MAPS - Formato: https://www.google.com/maps/dir/?api=1&destination=NOMBRE+LUGAR
+        var companies = [
+            { name: "Biorizon Biotech", logo: "biorizon-biotech.png", category: "agro", categoryName: "Biotecnología", lat: 36.8381, lng: -2.4021, maps: "https://www.google.com/maps/dir/?api=1&destination=Biorizon+Biotech+PITA+Almeria" },
+            { name: "Cajamar", logo: "cajamar.png", category: "services", categoryName: "Servicios financieros", lat: 36.8377, lng: -2.4012, maps: "https://www.google.com/maps/dir/?api=1&destination=Cajamar+PITA+Almeria" },
+            { name: "Caparrós Nature", logo: "caparros-nature.png", category: "agro", categoryName: "Agricultura", lat: 36.8372, lng: -2.4008, maps: "https://www.google.com/maps/dir/?api=1&destination=Caparros+Nature+PITA+Almeria" },
+            { name: "Dicsa", logo: "dicsa.png", category: "tech", categoryName: "Tecnología", lat: 36.8379, lng: -2.4015, maps: "https://www.google.com/maps/dir/?api=1&destination=Dicsa+PITA+Almeria" },
+            { name: "Edificio Grupo Cajamar", logo: "edificio-grupo-cajamar.jpg", category: "services", categoryName: "Servicios", lat: 36.8377, lng: -2.4012, maps: "https://www.google.com/maps/dir/?api=1&destination=Grupo+Cajamar+PITA+Almeria" },
+            { name: "Hintes", logo: "hintes.png", category: "tech", categoryName: "Tecnología", lat: 36.8380, lng: -2.4018, maps: "https://www.google.com/maps/dir/?api=1&destination=Hintes+PITA+Almeria" },
+            { name: "Iberveg", logo: "iberveg.png", category: "agro", categoryName: "Agricultura", lat: 36.8376, lng: -2.4010, maps: "https://www.google.com/maps/dir/?api=1&destination=Iberveg+PITA+Almeria" },
+            { name: "IDM", logo: "idm.jpg", category: "tech", categoryName: "Tecnología", lat: 36.8378, lng: -2.4014, maps: "https://www.google.com/maps/dir/?api=1&destination=IDM+PITA+Almeria" },
+            { name: "L&D", logo: "l-d.png", category: "services", categoryName: "Servicios", lat: 36.8382, lng: -2.4020, maps: "https://www.google.com/maps/dir/?api=1&destination=LD+Fragancias+PITA+Almeria" },
+            { name: "Lab", logo: "lab.jpg", category: "tech", categoryName: "Investigación", lat: 36.8383, lng: -2.4022, maps: "https://www.google.com/maps/dir/?api=1&destination=Lab+PITA+Almeria" },
+            { name: "Mecánica 4h", logo: "mecanica-4h.png", category: "services", categoryName: "Servicios", lat: 36.8374, lng: -2.4006, maps: "https://www.google.com/maps/dir/?api=1&destination=Mecanica+4h+PITA+Almeria" },
+            { name: "Tecnova", logo: "tecnova.png", category: "tech", categoryName: "Investigación", lat: 36.8385, lng: -2.4025, maps: "https://www.google.com/maps/dir/?api=1&destination=Fundacion+Tecnova+PITA+Almeria" },
+            { name: "Única Group", logo: "unica-group.png", category: "agro", categoryName: "Agricultura", lat: 36.8370, lng: -2.4005, maps: "https://www.google.com/maps/dir/?api=1&destination=Unica+Group+PITA+Almeria" }
+        ];
+
+        var defaultIconSvg = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>';
+        var arrowIconSvg = '<svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
+
+        var userLat = null;
+        var userLng = null;
+        var currentCategory = 'all';
+        var currentFilter = '';
+
+        // Haversine formula for distance calculation
+        function getDistance(lat1, lng1, lat2, lng2) {
+            var R = 6371;
+            var dLat = (lat2 - lat1) * Math.PI / 180;
+            var dLng = (lng2 - lng1) * Math.PI / 180;
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLng/2) * Math.sin(dLng/2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function formatDistance(km) {
+            if (km < 1) {
+                return Math.round(km * 1000) + ' m';
+            }
+            return km.toFixed(1) + ' km';
+        }
+
+        function initTheme() {
+            var saved = localStorage.getItem('pita-theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var theme = saved || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+            updateThemeColor(theme);
+        }
+
+        function updateThemeColor(theme) {
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) {
+                meta.setAttribute('content', theme === 'dark' ? '#0a0a0a' : '#16a34a');
+            }
+        }
+
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            var current = document.documentElement.getAttribute('data-theme');
+            var next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('pita-theme', next);
+            updateThemeColor(next);
+        });
+
+        // Geolocation
+        document.getElementById('locationBtn').addEventListener('click', function() {
+            if (!navigator.geolocation) {
+                alert('Tu navegador no soporta geolocalización');
+                return;
+            }
+            
+            var btn = this;
+            btn.style.opacity = '0.5';
+            
+            navigator.geolocation.getCurrentPosition(
+                function(pos) {
+                    userLat = pos.coords.latitude;
+                    userLng = pos.coords.longitude;
+                    document.getElementById('locationBanner').classList.add('show');
+                    btn.style.opacity = '1';
+                    btn.style.borderColor = 'var(--primary)';
+                    btn.querySelector('svg').style.color = 'var(--primary)';
+                    render();
+                },
+                function(err) {
+                    btn.style.opacity = '1';
+                    alert('No se pudo obtener tu ubicación');
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        });
+
+        // Category filters
+        document.getElementById('filters').addEventListener('click', function(e) {
+            if (e.target.classList.contains('filter-btn')) {
+                var btns = this.querySelectorAll('.filter-btn');
+                for (var i = 0; i < btns.length; i++) {
+                    btns[i].classList.remove('active');
+                }
+                e.target.classList.add('active');
+                currentCategory = e.target.getAttribute('data-category');
+                render();
+            }
+        });
+
+        function render() {
+            var list = document.getElementById('companyList');
+            var noResults = document.getElementById('noResults');
+            
+            var filtered = companies.filter(function(c) {
+                var matchesSearch = c.name.toLowerCase().indexOf(currentFilter.toLowerCase()) !== -1;
+                var matchesCategory = currentCategory === 'all' || c.category === currentCategory;
+                return matchesSearch && matchesCategory;
+            });
+
+            // Add distance if available
+            if (userLat !== null && userLng !== null) {
+                for (var i = 0; i < filtered.length; i++) {
+                    filtered[i].distance = getDistance(userLat, userLng, filtered[i].lat, filtered[i].lng);
+                }
+                // Sort by distance
+                filtered.sort(function(a, b) {
+                    return a.distance - b.distance;
+                });
+            }
+
+            if (filtered.length === 0) {
+                list.innerHTML = '';
+                noResults.classList.add('show');
+                return;
+            }
+
+            noResults.classList.remove('show');
+            
+            var html = '';
+            for (var i = 0; i < filtered.length; i++) {
+                var c = filtered[i];
+                // Usar logo local de la carpeta logos/
+                var iconHtml = '<img src="logos/' + c.logo + '" alt="' + c.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div class="logo-fallback" style="display:none">' + defaultIconSvg + '</div>';
+                
+                var distanceHtml = '';
+                if (c.distance !== undefined) {
+                    distanceHtml = '<span class="company-distance">' + formatDistance(c.distance) + '</span>';
+                }
+                
+                var delay = 0.2 + (i * 0.05);
+                
+                html += '<a href="' + c.maps + '" target="_blank" rel="noopener" class="company-card" style="animation-delay:' + delay + 's">' +
+                    '<div class="company-icon">' + iconHtml + '</div>' +
+                    '<div class="company-info">' +
+                        '<span class="company-name">' + c.name + '</span>' +
+                        '<div class="company-meta">' +
+                            '<span class="company-category">' + c.categoryName + '</span>' +
+                            distanceHtml +
+                        '</div>' +
+                    '</div>' +
+                    arrowIconSvg +
+                '</a>';
+            }
+            list.innerHTML = html;
+        }
+
+        var timeout;
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            clearTimeout(timeout);
+            var value = e.target.value;
+            timeout = setTimeout(function() {
+                currentFilter = value;
+                render();
+            }, 100);
+        });
+
+        // PWA Install prompt
+        var deferredPrompt;
+        var installPrompt = document.getElementById('installPrompt');
+
+        window.addEventListener('beforeinstallprompt', function(e) {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show after 3 seconds if user hasn't dismissed before
+            if (!localStorage.getItem('pita-install-dismissed')) {
+                setTimeout(function() {
+                    installPrompt.classList.add('show');
+                }, 3000);
+            }
+        });
+
+        document.getElementById('installNow').addEventListener('click', function() {
+            installPrompt.classList.remove('show');
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(function(result) {
+                    deferredPrompt = null;
+                });
+            }
+        });
+
+        document.getElementById('installLater').addEventListener('click', function() {
+            installPrompt.classList.remove('show');
+            localStorage.setItem('pita-install-dismissed', 'true');
+        });
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').catch(function(err) {
+                    console.log('SW registration failed');
+                });
+            });
+        }
+
+        // Init
+        initTheme();
+        render();
+    </script>
+</body>
+</html>
